@@ -1,0 +1,8 @@
+Using this file to refer to grammmar that may be needed for the execution of the program
+
+
+Expression -> TERM ((PLUS|MINUS)TERM)*
+
+TERM -> FACTOR ((MULTIPLY/DIVIDE)FACTOR)*
+
+FACTOR -> INT|FLOAT
