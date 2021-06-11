@@ -2,7 +2,7 @@
 import baesic
 while True :
     text = input('baesic > ')
-    result, error = baesic.run(text)
+    result, error = baesic.run('stdin',text)
 
     if error : print (error.as_string())
     else:
