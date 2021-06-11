@@ -1,8 +1,24 @@
 Using this file to refer to grammmar that may be needed for the execution of the program
 
 
-Expression -> TERM ((PLUS|MINUS)TERM)*
+Expression  ->  TERM ((PLUS|MINUS)TERM)*
+TERM        ->  FACTOR ((MULTIPLY/DIVIDE)FACTOR)*
+FACTOR      ->  INT|FLOAT
 
-TERM -> FACTOR ((MULTIPLY/DIVIDE)FACTOR)*
+but here, you cannot have negative numbers,
 
-FACTOR -> INT|FLOAT
+Expression  ->  TERM ((PLUS|MINUS)TERM)*
+TERM        ->  FACTOR ((MULTIPLY/DIVIDE)FACTOR)*
+FACTOR      ->  INT|FLOAT
+            ->  (PLUS|MINUS) FACTOR  
+
+now, we don't have support for left and right parenthesis changing the priority of operation
+
+Expression  ->  TERM ((PLUS|MINUS)TERM)*
+TERM        ->  FACTOR ((MULTIPLY/DIVIDE)FACTOR)*
+FACTOR      ->  INT|FLOAT
+            ->  (PLUS|MINUS) FACTOR  
+            ->  LPAREN expr RPAREN
+
+    
+            
