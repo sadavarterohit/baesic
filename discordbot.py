@@ -1,5 +1,6 @@
 import discord
 import re 
+import baesic
 
 class MyClient(discord.Client):
     async def on_ready(self):
@@ -17,8 +18,20 @@ class MyClient(discord.Client):
             if x:
                 a=x.span()
                 solve=txt[a[0]+3:a[1]-3]
+                result, error = baesic.run('stdin',solve)
+                if error : 
+                    await message.channel.send(error.as_string())
+                else:
+                    await message.channel.send(result)
+                    
+
 
                 print(solve)
 
 client = MyClient()
 client.run('ODUyODQ5OTQ5OTI2MzU5MTAx.YMM0aQ.ydzZzxQbhdqnt2TzQSF7oBhfVIQ')
+
+
+    
+    
+    

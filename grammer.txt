@@ -20,5 +20,14 @@ FACTOR      ->  INT|FLOAT
             ->  (PLUS|MINUS) FACTOR  
             ->  LPAREN expr RPAREN
 
+To add powers, now we need to make this change below
+
+Expression  ->  TERM ((PLUS|MINUS)TERM)*
+TERM        ->  FACTOR ((MULTIPLY/DIVIDE)FACTOR)*
+FACTOR      ->  (PLUS|MINUS) FACTOR  
+            ->  POWER
+POWER       ->  ATOM (POW FACTOR*)            
+ATOM        ->  INT|FLOAT
+            ->  LPAREN expr RPAREN
     
             
