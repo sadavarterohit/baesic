@@ -54,7 +54,7 @@ class RTError(Error):
             pos = context.parent_entry_pos
             context = context.parent    
 
-        return result
+        return "Error here :"+result
 
 
 
@@ -76,6 +76,8 @@ class Position:
         if current_char=='\n':
             self.ln+=1
             self.col =0
+
+        return self
 
     def copy(self):
         return Position(self.index, self.ln, self.col, self.fn, self.ftxt)
@@ -288,7 +290,6 @@ class Parser:
     def __init__(self, tokens):
         self.tokens = tokens
         self.tok_idx = -1
-
         self.advance()
 
     def advance(self):
@@ -324,35 +325,35 @@ class Parser:
                 return res.success(expr)
 
             else:
+                
                 return res.failure(InvalidSyntaxError(self.current_tok.pos_start, self.current_tok.pos_end, "Expected )"))
-
+        
         return res.failure(InvalidSyntaxError(tok.pos_start, tok.pos_end, "Expected int or float"))
 
     def power(self):
-        return self.bin_op(self.atom, [TT_POW], self.factor)
+        return self.bin_op(self.atom, (TT_POW, ), self.factor)
 
     def factor(self):
         res= ParseResult()
         tok = self.current_tok
 
-        if tok.type in [TT_PLUS, TT_MINUS]:
+        if tok.type in (TT_PLUS, TT_MINUS):
             res.register(self.advance())
             factor = res.register(self.factor())
 
-            if res.error : return res
+            if res.error :
+                return res
             return res.success(UnaryOpNode(tok, factor))   
-
-
         return self.power()
 
     
 
 
     def term(self):
-        return self.bin_op(self.factor, [TT_MUL,TT_DIV])
+        return self.bin_op(self.factor, (TT_MUL,TT_DIV))
 
     def expr(self):
-        return self.bin_op(self.term, [TT_PLUS,TT_MINUS])
+        return self.bin_op(self.term, (TT_PLUS,TT_MINUS))
 
     #since the rule of term and expr and similar, just use one common one
     def bin_op(self, func_a, ops, func_b=None):
@@ -372,7 +373,7 @@ class Parser:
             if res.error: return res
 
             left= BinOpNode(left, op_tok, right)
-
+        
         return res.success(left)
 
 #Number class cuz it's a form of data
@@ -466,13 +467,15 @@ class Interpreter:
 
         if error:
             return res.failure(error)
+        
 
         return res.success(result.set_pos(node.pos_start, node.pos_end))
         
 
     def visit_UnaryOpNode(self, node, context):
         res = RTResult()
-        number = res.register(self.visit(node.node.context))
+        number = res.register(self.visit(node.node,context))
+        if res.error : return res
 
         error = None
 
