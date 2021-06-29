@@ -29,5 +29,17 @@ FACTOR      ->  (PLUS|MINUS) FACTOR
 POWER       ->  ATOM (POW FACTOR*)            
 ATOM        ->  INT|FLOAT
             ->  LPAREN expr RPAREN
-    
+
+We may need VAR a = ...
+and also to use the identifier wherever we want
+So, we add the = identifier
+
+Expression  ->  KEYWORD:VAR IDENTIFIER EQ Expression
+            ->  TERM ((PLUS|MINUS)TERM)*
+TERM        ->  FACTOR ((MULTIPLY/DIVIDE)FACTOR)*
+FACTOR      ->  (PLUS|MINUS) FACTOR  
+            ->  POWER
+POWER       ->  ATOM (POW FACTOR*)            
+ATOM        ->  INT|FLOAT|IDENTIFIER
+            ->  LPAREN expr RPAREN
             
