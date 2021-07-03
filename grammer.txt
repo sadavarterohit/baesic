@@ -60,3 +60,24 @@ POWER       ->  ATOM (POW FACTOR*)
 ATOM        ->  INT|FLOAT|IDENTIFIER
             ->  LPAREN expr RPAREN
             
+Now let's add >
+IF 5==5 then stmt else stmt
+we also want it to have a value as in the python if
+VAR a = IF variable >=100 THEN 40 ELSE 20
+this makes our IF an expression by default
+
+Expression  ->  KEYWORD:VAR IDENTIFIER EQ Expression
+            ->  comp_expr ((KEYWORD:AND)|KEYWORD:OR)comp_expr)*
+comp_expr   ->  (KEYWORD:NOT) comparison  
+            ->  Arithmetic ((EE|LT|GT|LTE|GTE) Arithmetic)*
+Arithmetic  ->  TERM ((PLUS|MINUS)TERM)*
+TERM        ->  FACTOR ((MULTIPLY/DIVIDE)FACTOR)*
+FACTOR      ->  (PLUS|MINUS) FACTOR  
+            ->  POWER
+POWER       ->  ATOM (POW FACTOR*)            
+ATOM        ->  INT|FLOAT|IDENTIFIER
+            ->  LPAREN expr RPAREN
+            ->  if-expr 
+if-expr     ->  KEYWORD : IF expr KEYWORD:THEN expr
+                (KEYWORD : ELIF expr KEYWORD : THEN expr)*
+                (KEYWORD : ELSE expr) ?
