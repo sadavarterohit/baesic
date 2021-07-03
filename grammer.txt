@@ -42,4 +42,21 @@ FACTOR      ->  (PLUS|MINUS) FACTOR
 POWER       ->  ATOM (POW FACTOR*)            
 ATOM        ->  INT|FLOAT|IDENTIFIER
             ->  LPAREN expr RPAREN
+
+Now we need to add the comparison operators
+like 5+5 == 2+8 
+so, comparison has to take lesser priority than expression, 
+but at the same time, VAR a = 5==5 should have higher priority for 5==5, so we gotta put it in between
+
+Expression  ->  KEYWORD:VAR IDENTIFIER EQ Expression
+            ->  comp_expr ((KEYWORD:AND)|KEYWORD:OR)comp_expr)*
+comp_expr   ->  (KEYWORD:NOT) comparison  
+            ->  Arithmetic ((EE|LT|GT|LTE|GTE) Arithmetic)*
+Arithmetic  ->  TERM ((PLUS|MINUS)TERM)*
+TERM        ->  FACTOR ((MULTIPLY/DIVIDE)FACTOR)*
+FACTOR      ->  (PLUS|MINUS) FACTOR  
+            ->  POWER
+POWER       ->  ATOM (POW FACTOR*)            
+ATOM        ->  INT|FLOAT|IDENTIFIER
+            ->  LPAREN expr RPAREN
             
