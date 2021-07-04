@@ -81,3 +81,29 @@ ATOM        ->  INT|FLOAT|IDENTIFIER
 if-expr     ->  KEYWORD : IF expr KEYWORD:THEN expr
                 (KEYWORD : ELIF expr KEYWORD : THEN expr)*
                 (KEYWORD : ELSE expr) ?
+
+now we gotta add for and while, very similar to if
+FOR <variable> = .... TO ..... STEP ... THEN ....
+WHILE <condition> THEN ...
+again, same as if, they're just expressions.
+
+Expression  ->  KEYWORD:VAR IDENTIFIER EQ Expression
+            ->  comp_expr ((KEYWORD:AND)|KEYWORD:OR)comp_expr)*
+comp_expr   ->  (KEYWORD:NOT) comparison  
+            ->  Arithmetic ((EE|LT|GT|LTE|GTE) Arithmetic)*
+Arithmetic  ->  TERM ((PLUS|MINUS)TERM)*
+TERM        ->  FACTOR ((MULTIPLY/DIVIDE)FACTOR)*
+FACTOR      ->  (PLUS|MINUS) FACTOR  
+            ->  POWER
+POWER       ->  ATOM (POW FACTOR*)            
+ATOM        ->  INT|FLOAT|IDENTIFIER
+            ->  LPAREN expr RPAREN
+            ->  if-expr 
+            ->  for-expr
+            ->  while-expr
+if-expr     ->  KEYWORD : IF expr KEYWORD:THEN expr
+                (KEYWORD : ELIF expr KEYWORD : THEN expr)*
+                (KEYWORD : ELSE expr) ?
+for-expr    ->  KEYWORD : FOR IDENTIFIER EQ expr KEYWORD TO expr
+                (KEYWORD : STEP expr)? KEYWORD:THEN expr
+while-expr  ->  KEYWORD:WHILE expr KEYWORD:THEN expr
