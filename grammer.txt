@@ -107,3 +107,68 @@ if-expr     ->  KEYWORD : IF expr KEYWORD:THEN expr
 for-expr    ->  KEYWORD : FOR IDENTIFIER EQ expr KEYWORD TO expr
                 (KEYWORD : STEP expr)? KEYWORD:THEN expr
 while-expr  ->  KEYWORD:WHILE expr KEYWORD:THEN expr
+
+
+Time to add multi line statements, we'll add newline characters.
+Now, you can have bigger programs. But to test on the shell, you need to have a semicolon to replace it.
+To actually use how it works, we need to add more shit to it, that is, 
+
+IF <expr> THEN <expr> 
+
+this should only take in one line, and execute it, but 
+
+FOR <Expr> then
+<expr>
+<expr>
+<expr>
+end
+
+should be executing more than just the one expression, and should expect an END keyword, where the first example does not.
+We can actually implement this, since \n is the break that occours in between
+This changes the grammar in a lot of ways.
+
+Let's divide the if expression into 3 parts, if, if a, b
+
+statements  ->  NEWLINE* expr (NEWLINE+ expr)* NEWLINE*
+
+Expression  ->  KEYWORD:VAR IDENTIFIER EQ Expression
+            ->  comp_expr ((KEYWORD:AND)|KEYWORD:OR)comp_expr)*
+
+comp_expr   ->  (KEYWORD:NOT) comparison  
+            ->  Arithmetic ((EE|LT|GT|LTE|GTE) Arithmetic)*
+
+Arithmetic  ->  TERM ((PLUS|MINUS)TERM)*
+
+TERM        ->  FACTOR ((MULTIPLY/DIVIDE)FACTOR)*
+
+FACTOR      ->  (PLUS|MINUS) FACTOR  
+            ->  POWER
+
+POWER       ->  ATOM (POW FACTOR*)   
+
+ATOM        ->  INT|FLOAT|IDENTIFIER
+            ->  LPAREN expr RPAREN
+            ->  if-expr 
+            ->  for-expr
+            ->  while-expr
+                
+if-expr     ->  KEYWORD : IF expr KEYWORD : THEN 
+                (expr if-expr-b|if-expr-c?)
+                | (NEWLINE statements KEYWORD WND | if-expr-b| if-expr-c)
+
+if-expr-b   ->  KEYWORD : ELIF expr KEYWORD : THEN 
+                (expr if-expr-b|if-expr-c?)
+                | (NEWLINE statements KEYWORD WND | if-expr-b| if-expr-c)
+
+if-expr-c   ->  KEYWORD:ELSE
+                expr
+                | (NEWLINE statements KEYWORD : END)
+
+for-expr    ->  KEYWORD : FOR IDENTIFIER EQ expr KEYWORD TO expr 
+                (KEYWORD : STEP expr)? KEYWORD:THEN 
+                expr
+                | (NEWLINE statements KEYWORD : END)
+
+while-expr  ->  KEYWORD:WHILE expr KEYWORD:THEN 
+                expr
+                | (NEWLINE statements KEYWORD : END)

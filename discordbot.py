@@ -21,8 +21,11 @@ class MyClient(discord.Client):
                 result, error = baesic.run('stdin',solve)
                 if error : 
                     await message.channel.send(error.as_string())
-                else:
-                    await message.channel.send(result)
+                elif result:
+                    if len(result.elements) ==1:
+                        await message.channel.send(repr(result.elements[0]))
+                    else:
+                        await message.channel.send(repr(result))
                     
 
 
