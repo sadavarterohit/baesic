@@ -274,7 +274,7 @@ class Lexer:
         if self.current_char == '=':
             self.advance()
             return Token(TT_NE, pos_start=pos_start, pos_end=self.pos), None
-        self.advace()
+        self.advance()
         return None, ExpectedCharError(pos_start, self.pos, "'=' after !")
 
     def make_equals(self):
@@ -399,7 +399,8 @@ class ListNode:
 
         self.pos_start  = pos_start
         self.pos_end = pos_end
-
+    
+    
 
 
 # PARSE RESULT CLASS
@@ -1159,6 +1160,7 @@ class Interpreter:
 
         if node.step_value_node:
             step_value = res.register(self.visit(node.step_value_node, context))
+            
 
             if res.error: return res
         else:

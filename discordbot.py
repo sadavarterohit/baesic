@@ -1,6 +1,10 @@
 import discord
 import re 
 import baesic
+from dotenv import load_dotenv
+import os
+load_dotenv()
+
 
 class MyClient(discord.Client):
     async def on_ready(self):
@@ -32,8 +36,10 @@ class MyClient(discord.Client):
                 print(solve)
 
 client = MyClient()
-client.run('ODUyODQ5OTQ5OTI2MzU5MTAx.YMM0aQ.ydzZzxQbhdqnt2TzQSF7oBhfVIQ')
 
+token = os.getenv("Token")
+print(token)
+client.run(token)
 
     
     
